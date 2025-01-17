@@ -5,11 +5,12 @@ import com.abaza_vg.binlist.domain.Country
 import com.abaza_vg.binlist.domain.Number
 
 class CardInfoDTO(
-    var number: Number,
-    var country: Country,
-    var bank: Bank,
-    var scheme: String,
-    var type: String,
-    var brand: String,
-    var prepaid: Boolean
+    val number: Number,
+    val country: Country,
+    val bank: Bank,
+    val bin: String,
+    val scheme: String,
+    val type: String,
+    val brand: String,
+    val prepaid: Boolean,
 )

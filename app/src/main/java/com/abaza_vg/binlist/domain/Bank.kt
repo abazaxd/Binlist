@@ -1,8 +1,8 @@
 package com.abaza_vg.binlist.domain
 
 data class Bank(
-    var name: String,
-    var url: String,
-    var phone: String,
-    var city: String
+    val name: String,
+    val url: String,
+    val phone: String,
+    val city: String
 )
