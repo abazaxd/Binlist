@@ -1,52 +1,60 @@
 package com.abaza_vg.binlist.presentation
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.abaza_vg.binlist.data.CardInfoRepositoryImpl
-import com.abaza_vg.binlist.domain.GetCardInfoUseCase
-import com.abaza_vg.binlist.presentation.theme.BinlistTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModelProvider
+import com.abaza_vg.binlist.presentation.ui.theme.BinlistTheme
+import javax.inject.Inject
+
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var viewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (application as CardInfoApp).component
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+        setViewModelObservers()
         enableEdgeToEdge()
         setContent {
             BinlistTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Column(Modifier.padding(it)) {
+                        Drawer(viewModel)
+                    }
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun setViewModelObservers() {
+        viewModel.cardInfo.observe(this) {
+            viewModel.saveCardInfoToHistory()
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BinlistTheme {
-        Greeting("Android")
+        viewModel.requestError.observe(this) {
+            viewModel.requestError.value?.let {
+                Toast.makeText(this, "Request error: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

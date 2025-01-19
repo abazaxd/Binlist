@@ -1,28 +1,34 @@
 package com.abaza_vg.binlist.data
 
-import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.abaza_vg.binlist.data.retrofit.API
-import com.abaza_vg.binlist.data.retrofit.RetrofitClient
-import com.abaza_vg.binlist.data.room.AppDatabase
+import com.abaza_vg.binlist.data.room.CardInfoDAO
 import com.abaza_vg.binlist.domain.CardInfo
 import com.abaza_vg.binlist.domain.CardInfoRepository
+import javax.inject.Inject
 
-class CardInfoRepositoryImpl(application: Application): CardInfoRepository {
+class CardInfoRepositoryImpl @Inject constructor(
+    private val dao: CardInfoDAO,
+    private val mapper: CardInfoMapper,
+    private val api: API
+): CardInfoRepository {
 
-    private val dao = AppDatabase.getInstance(application).cardInfoDao()
-    private val api = RetrofitClient.getClient().create(API::class.java)
-    private val mapper = CardInfoMapper()
+
 
     override suspend fun getCardInfo(bin: String): CardInfo {
-        return mapper.mapCardInfoDTOtoCardInfo(api.getCardInfo(bin))
+        val cardInfo = mapper.mapCardInfoDTOtoCardInfo(api.getCardInfo(bin))
+        cardInfo.bin = bin
+        return cardInfo
     }
 
-    override fun saveCardInfoToHistory(cardInfo: CardInfo) {
+    override suspend fun saveCardInfoToHistory(cardInfo: CardInfo) {
         dao.addCardInfo(mapper.mapCardInfoToCardInfoDbModel(cardInfo))
     }
 
-    override fun getHistory(): LiveData<List<CardInfoDbModel>> {
-        return dao.getCardInfoList()
+    override fun getHistory(): LiveData<List<CardInfo>> = MediatorLiveData<List<CardInfo>>().apply {
+        addSource(dao.getCardInfoList()) {
+            value = mapper.mapCardInfoDbModelListToCardInfoList(it)
+        }
     }
 }

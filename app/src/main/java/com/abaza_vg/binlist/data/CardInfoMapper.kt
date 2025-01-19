@@ -4,8 +4,9 @@ import com.abaza_vg.binlist.domain.Bank
 import com.abaza_vg.binlist.domain.CardInfo
 import com.abaza_vg.binlist.domain.Country
 import com.abaza_vg.binlist.domain.Number
+import javax.inject.Inject
 
-class CardInfoMapper {
+class CardInfoMapper @Inject constructor() {
 
     fun mapCardInfoDTOtoCardInfo(cardInfoDTO: CardInfoDTO): CardInfo {
         return CardInfo(
@@ -26,20 +27,19 @@ class CardInfoMapper {
             type = cardInfo.type,
             brand = cardInfo.brand,
             prepaid = cardInfo.prepaid,
-            numeric = cardInfo.country.numeric,
-            alpha2 = cardInfo.country.alpha2,
-            bankName = cardInfo.bank.name,
-            emoji = cardInfo.country.emoji,
-            currency = cardInfo.country.currency,
-            latitude = cardInfo.country.latitude,
-            longitude = cardInfo.country.longitude,
-            countryName = cardInfo.country.name,
-            url = cardInfo.bank.url,
-            phone = cardInfo.bank.phone,
-            city = cardInfo.bank.city,
-            length = cardInfo.number.length,
-            luhn = cardInfo.number.luhn,
-            id = cardInfo.id,
+            numeric = cardInfo.country?.numeric,
+            alpha2 = cardInfo.country?.alpha2,
+            bankName = cardInfo.bank?.name,
+            emoji = cardInfo.country?.emoji,
+            currency = cardInfo.country?.currency,
+            latitude = cardInfo.country?.latitude,
+            longitude = cardInfo.country?.longitude,
+            countryName = cardInfo.country?.name,
+            url = cardInfo.bank?.url,
+            phone = cardInfo.bank?.phone,
+            city = cardInfo.bank?.city,
+            length = cardInfo.number?.length,
+            luhn = cardInfo.number?.luhn,
             bin = cardInfo.bin
         )
     }
@@ -75,8 +75,11 @@ class CardInfoMapper {
             type = cardInfoDbModel.type,
             brand = cardInfoDbModel.brand,
             prepaid = cardInfoDbModel.prepaid,
-            id = cardInfoDbModel.id,
             bin = cardInfoDbModel.bin
         )
+    }
+
+    fun mapCardInfoDbModelListToCardInfoList(list: List<CardInfoDbModel>) = list.map {
+        mapCardInfoDbModelToCardInfo(it)
     }
 }

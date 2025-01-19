@@ -13,5 +13,5 @@ interface CardInfoDAO {
     fun getCardInfoList(): LiveData<List<CardInfoDbModel>>
 
     @Insert
-    fun addCardInfo(cardInfo: CardInfoDbModel)
+    suspend fun addCardInfo(cardInfo: CardInfoDbModel)
 }

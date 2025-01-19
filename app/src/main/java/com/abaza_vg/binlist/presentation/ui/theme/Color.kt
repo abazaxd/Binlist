@@ -1,4 +1,4 @@
-package com.abaza_vg.binlist.presentation.theme
+package com.abaza_vg.binlist.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

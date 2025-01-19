@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+    id ("kotlin-kapt")
 }
 
 android {
@@ -54,6 +55,10 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.runtime.livedata)
+    implementation (libs.google.dagger)
+    implementation (libs.dagger.android)
+    kapt (libs.google.dagger.compiler)
     ksp(libs.androidx.room.compiler)
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.junit)

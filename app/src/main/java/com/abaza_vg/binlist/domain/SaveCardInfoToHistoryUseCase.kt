@@ -1,8 +1,10 @@
 package com.abaza_vg.binlist.domain
 
-class SaveCardInfoToHistoryUseCase(private val cardInfoRepository: CardInfoRepository) {
+import javax.inject.Inject
 
-    fun saveCardInfoToHistory(cardInfo:CardInfo) {
+class SaveCardInfoToHistoryUseCase @Inject constructor(private val cardInfoRepository: CardInfoRepository) {
+
+    suspend fun saveCardInfoToHistory(cardInfo:CardInfo) {
         cardInfoRepository.saveCardInfoToHistory(cardInfo)
     }
 }
